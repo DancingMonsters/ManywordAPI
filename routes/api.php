@@ -18,6 +18,8 @@ use App\Http\Controllers\dictionaryController;
 Route::prefix('levels') -> group(function() {
     Route::get('{language}', [levelsController::class, 'index']);
     Route::get('{language}/{id}', [levelsController::class, 'show']);
+    Route::post('{language}/create', [levelsController::class, 'create']);
+    Route::post('uniques', [levelsController::class, 'setUniques']);
 });
 
 Route::prefix('dictionary') -> group(function() {
