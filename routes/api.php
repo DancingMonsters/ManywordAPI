@@ -5,25 +5,31 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\levelsController;
 use App\Http\Controllers\dictionaryController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-Route::prefix('levels') -> group(function() {
-    Route::get('{language}', [levelsController::class, 'index']);
-    Route::get('{language}/{id}', [levelsController::class, 'show']);
+Route::prefix('create') -> group(function() {
+    Route::post('dictionary/{language}', [dictionaryController::class, 'create']) -> name("wordAdd");
+    Route::post('levels/{language}', [levelsController::class, 'create']) -> name("levelAdd");
+});
+
+Route::prefix('edit') -> group(function() {
+    Route::post('dictionary/{language}/{id}', [dictionaryController::class, 'edit']) -> name ("wordEdit");
+    Route::post('levels/{language}/{id}', [levelsController::class, 'edit']) -> name ("levelEdit");
+});
+
+Route::prefix('destroy') -> group(function() {
+   Route::get('dictionary/{language}/{id}', [dictionaryController::class, 'destroy']) -> name ("wordDestroy");
+   Route::get('levels/{language}/{id}', [levelsController::class, 'destroy']) -> name("levelDestroy"); 
 });
 
 Route::prefix('dictionary') -> group(function() {
     Route::get('{language}', [dictionaryController::class, 'index']) -> name ("words");
     Route::get('{language}/{id}', [dictionaryController::class, 'show']) -> name("wordShow");
-    Route::post('create', [dictionaryController::class, 'create']) -> name("wordAdd");
 });
+
+Route::prefix('levels') -> group(function() {
+    Route::get('{language}', [levelsController::class, 'index']);
+    Route::get('{language}/{id}', [levelsController::class, 'show']);
+});
+
+// Route::get('generate', [levelsController::class, 'generate']);
 
 

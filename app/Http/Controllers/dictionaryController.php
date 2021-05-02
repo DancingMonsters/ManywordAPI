@@ -30,8 +30,7 @@ class dictionaryController extends Controller
             return response()->json(["status" => false]);
     }
 
-    public function create(Request $req) {
-        $language = $req -> input('language');
+    public function create(Request $req, $language) {
         $word = $req -> input('word');
         $particle = $req -> input('particle');
         $table = $this->getDictionaryTable($language);
@@ -43,16 +42,25 @@ class dictionaryController extends Controller
         }
     }
 
-    // public function edit(Request $req, $id) {
-    //     $language = $req -> input('language');
-    //     $table = $this->getDictionaryTable($language);
-    //     if($table) {
-    //         $editableWord = $table -> find($id);
-    //         $editableWord -> word = $req -> input('word');
-    //         $editableWord -> particle = $req -> input('particle');
-    //         $editableWord -> save();
-    //     } else {
-    //         return response() -> json(["status" => false]);
-    //     }
-    // }
+    public function edit(Request $req, $language, $id) {
+        $table = $this->getDictionaryTable($language);
+        $word = $req -> input('word');
+        $particle = $req -> input("particle");
+        if($table) {
+            $table -> where("id", $id) -> update(["word" => $word, "particle" => $particle]);
+            return response() -> json(["status" => true]);
+        } else {
+            return response() -> json(["status" => false]);
+        }
+    }
+
+    public function destroy($language, $id) {
+        $table = $this->getDictionaryTable($language);
+        if($table) {
+            $table -> where("id", $id) -> delete();
+            return response() -> json(["status" => true]);
+        } else {
+            return response() -> json(["status" => false]);
+        }
+    }
 }
