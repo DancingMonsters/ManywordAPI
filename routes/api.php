@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\levelsController;
 use App\Http\Controllers\dictionaryController;
+use App\Http\Controllers\AlphabetsController;
+use App\Http\Controllers\WeightsController;
 
 Route::prefix('create') -> group(function() {
     Route::post('dictionary/{language}', [dictionaryController::class, 'create']) -> name("wordAdd");
@@ -28,6 +30,16 @@ Route::prefix('dictionary') -> group(function() {
 Route::prefix('levels') -> group(function() {
     Route::get('{language}', [levelsController::class, 'index']);
     Route::get('{language}/{id}', [levelsController::class, 'show']);
+});
+
+Route::prefix('alphabet') -> group(function() {
+    Route::post('add/{language}', [AlphabetsController::class, 'add']);
+    Route::get('get/{language}', [AlphabetsController::class, 'get']);
+});
+
+Route::prefix('weights') -> group(function() {
+    Route::post('add/{language}', [WeightsController::class, 'add']);
+    Route::get('get/{language}', [WeightsController::class, 'get']);
 });
 
 // Route::get('generate', [levelsController::class, 'generate']);
