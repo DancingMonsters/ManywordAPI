@@ -15,6 +15,6 @@ class WeightsController extends Controller
 
   public function get($language) {
       $weights = weights::where('lang', $language) -> get() -> first();
-      return response()->json($weights -> weights);
+      return response()->json(json_decode($weights -> weights));
   }
 }
