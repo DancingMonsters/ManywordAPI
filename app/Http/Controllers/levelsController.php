@@ -79,6 +79,10 @@ class levelsController extends Controller
             $level -> save();
         }
     }
+    
+    public function send() {
+        mail('errannnnnnn@gmail.com', 'tema', 'message');
+    }
 
     //--//--//--//--//--//--//--//--//--//--//--//
     //                                          //
