@@ -15,6 +15,6 @@ class AlphabetsController extends Controller
 
   public function get($language) {
       $alphabet = alphabets::where('lang', $language) -> get() -> first();
-      return response()->json($alphabet -> alphabet);
+      return response()->json(json_decode($alphabet -> alphabet));
   }
 }
