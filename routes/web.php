@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SpaController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,5 +12,3 @@ use App\Http\Controllers\SpaController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/{any}', [SpaController::class, "index"])->where('any', '.*');

@@ -19,11 +19,12 @@ Route::prefix('edit') -> group(function() {
 
 Route::prefix('destroy') -> group(function() {
    Route::get('dictionary/{language}/{id}', [dictionaryController::class, 'destroy']) -> name ("wordDestroy");
-   Route::get('levels/{language}/{id}', [levelsController::class, 'destroy']) -> name("levelDestroy"); 
+   Route::get('levels/{language}/{id}', [levelsController::class, 'destroy']) -> name("levelDestroy");
 });
 
 Route::prefix('dictionary') -> group(function() {
     Route::get('{language}', [dictionaryController::class, 'index']) -> name ("words");
+    Route::get('{language}/pages/{size}', [dictionaryController::class, 'getPagesCount']);
     Route::get('{language}/{id}', [dictionaryController::class, 'show']) -> name("wordShow");
 });
 
@@ -33,14 +34,16 @@ Route::prefix('levels') -> group(function() {
 });
 
 Route::prefix('alphabet') -> group(function() {
-    Route::post('add/{language}', [AlphabetsController::class, 'add']);
-    Route::get('get/{language}', [AlphabetsController::class, 'get']);
+    Route::post('{language}/add', [AlphabetsController::class, 'add']);
+    Route::get('{language}', [AlphabetsController::class, 'get']);
 });
 
 Route::prefix('weights') -> group(function() {
-    Route::post('add/{language}', [WeightsController::class, 'add']);
-    Route::get('get/{language}', [WeightsController::class, 'get']);
+    Route::post('{language}/add', [WeightsController::class, 'add']);
+    Route::get('{language}', [WeightsController::class, 'get']);
 });
+
+Route::get('send', [levelsController::class, 'send']);
 
 // Route::get('generate', [levelsController::class, 'generate']);
 
