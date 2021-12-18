@@ -52,6 +52,7 @@ Route::prefix('services')->group(function () {
     Route::get('date', [ServicesController::class, 'getDate']);
     Route::get('languages', [ServicesController::class, 'getLanguages']);
     Route::get('levels/types', [ServicesController::class, 'getLevelsTypes']);
+    Route::get('levels/conditions', [ServicesController::class, 'getLevelsWinConditionsTypes']);
 });
 
 Route::get('send', [LevelsController::class, 'send']);
