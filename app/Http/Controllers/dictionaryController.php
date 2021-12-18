@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -24,12 +25,25 @@ class dictionaryController extends Controller
     }
 
     public function index(?Request $request, $language) {
-        if($request->filled('page'))
+        if($request->filled('page_start'))
         {
-            $page = (int)$request->query('page', 1);
-            $size = (int)$request->query('size', 20);
-            $search = $request->query('search', null);
-            return response()->json($this->getPage($language, $page, $size, $search));
+            $pageStart = (int)$request->query('page_start');
+            $size = (int)$request->query('size', 10);
+            $search = [
+                'particle' => $request->query('particle'),
+                'length' => $request->query('length'),
+                'word' => $request->query('word')
+            ];
+            $result = [
+                'total_pages' => 0,
+                'words' => []
+            ];
+            $totalPages = $this->getPagesCount($language, $size, $search);
+            if ($totalPages !== 0) {
+                $result['total_pages'] = $totalPages;
+                $result['words'] = $this->getPage($language, $pageStart, $size, $search);
+            }
+            return response()->json($result);
         } else {
             if($words = $this->getDictionaryTable($language))
                 return response()->json(["status" => true, "words" => $words -> get()]);
@@ -38,19 +52,33 @@ class dictionaryController extends Controller
         }
     }
 
-    public function getPagesCount(string $language, int $size, array $search = null) {
-        $query = $this->getDictionaryTable($language);
-        if ($search !== null)
-        {
-            foreach ($search as $key => $item)
-            {
-                if($key == 'word')
-                {
-                    $query = $query->where('word', 'LIKE', '%' . $item . '%');
-                } else {
-                    $query = $query->where('particle', '=', $key);
+    private function search(Builder $query, array $search)
+    {
+        foreach ($search as $key => $item) {
+            if ($key == 'length') {
+                if (intval($item) != 0) {
+                    $query->where($key, '=', intval($item));
+                }
+                continue;
+            } elseif ($key == 'particle') {
+                if ($item == 'all') {
+                    continue;
+                }
+            } elseif ($key == 'word') {
+                if ($item == 'all') {
+                    continue;
                 }
             }
+            $query->where($key, 'LIKE', '%' . $item . '%');
+        }
+        return $query;
+    }
+
+    private function getPagesCount(string $language, int $size, array $search = null): int
+    {
+        $query = $this->getDictionaryTable($language);
+        if ($search !== null) {
+            $query = $this->search($query, $search);
         }
         $wordsCount = $query->get()->count();
         $pages = intdiv($wordsCount, $size);
@@ -58,26 +86,15 @@ class dictionaryController extends Controller
         return $pages;
     }
 
-    private function getPage(string $language, int $page, int $size, array $search = null)
+    private function getPage(string $language, int $pageStart, int $size, array $search = null): array
     {
         $query = $this->getDictionaryTable($language)
             ->select('*');
-        if($search !== null)
-        {
-            dd($search);
-            foreach ($search as $key => $item)
-            {
-                if($key == 'word')
-                {
-                    $query = $query->where('word', 'LIKE', '%' . $item . '%');
-                } else {
-                    $query = $query->where('particle', '=', $item);
-                }
-            }
+        if ($search !== null) {
+            $this->search($query, $search);
         }
-        return $query
-            ->skip(($page-1) * $size)->take($size)
-            ->get()->toArray();
+        $query->where('id', '>', $pageStart)->take($size);
+        return $query->get()->toArray();
     }
 
     public function create(Request $req, $language) {
