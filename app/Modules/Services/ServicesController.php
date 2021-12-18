@@ -5,6 +5,7 @@ namespace App\Modules\Services;
 use App\Modules\Services\Services\LevelsTypesService;
 use App\Modules\Services\Services\DateService;
 use App\Modules\Services\Services\LanguagesService;
+use App\Modules\Services\Services\LevelsWinConditionsTypesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -39,5 +40,16 @@ class ServicesController
     public function getLevelsTypes(LevelsTypesService $levelsTypesService, Request $request): JsonResponse
     {
         return response()->json($levelsTypesService->getLevelsTypes($request));
+    }
+
+    /**
+     * Получить типы условий победы
+     * @param LevelsWinConditionsTypesService $levelsWinConditionsTypesService
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLevelsWinConditionsTypes(LevelsWinConditionsTypesService $levelsWinConditionsTypesService, Request $request): JsonResponse
+    {
+        return response()->json($levelsWinConditionsTypesService->getLevelsWinConditionsTypes($request));
     }
 }
