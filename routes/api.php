@@ -1,32 +1,36 @@
 <?php
 
+use App\Modules\Dictionary\DictionaryController;
 use App\Modules\Histories\HistoriesController;
 use App\Modules\Levels\LevelsController;
 use App\Modules\Services\ServicesController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\dictionaryController;
 use App\Http\Controllers\AlphabetsController;
 use App\Http\Controllers\WeightsController;
 
-Route::prefix('create')->group(function () {
-    Route::post('dictionary/{language}', [dictionaryController::class, 'create'])->name("wordAdd");
-    Route::post('levels/{language}', [LevelsController::class, 'create'])->name("levelAdd");
-});
+//Route::prefix('create')->group(function () {
+//    Route::post('dictionary/{language}', [dictionaryController::class, 'create'])->name("wordAdd");
+//    Route::post('levels/{language}', [LevelsController::class, 'create'])->name("levelAdd");
+//});
 
-Route::prefix('edit')->group(function () {
-    Route::post('dictionary/{language}/{id}', [dictionaryController::class, 'edit'])->name("wordEdit");
-    Route::post('levels/{language}/{id}', [LevelsController::class, 'edit'])->name("levelEdit");
-});
+//Route::prefix('edit')->group(function () {
+//    Route::post('dictionary/{language}/{id}', [dictionaryController::class, 'edit'])->name("wordEdit");
+//    Route::post('levels/{language}/{id}', [LevelsController::class, 'edit'])->name("levelEdit");
+//});
 
-Route::prefix('destroy')->group(function () {
-    Route::get('dictionary/{language}/{id}', [dictionaryController::class, 'destroy'])->name("wordDestroy");
-    Route::get('levels/{language}/{id}', [LevelsController::class, 'destroy'])->name("levelDestroy");
-});
+//Route::prefix('destroy')->group(function () {
+//    Route::get('dictionary/{language}/{id}', [dictionaryController::class, 'destroy'])->name("wordDestroy");
+//    Route::get('levels/{language}/{id}', [LevelsController::class, 'destroy'])->name("levelDestroy");
+//});
+
+//Route::prefix('dictionary')->group(function () {
+//    Route::get('{language}', [dictionaryController::class, 'index'])->name("words");
+//    Route::get('{language}/pages/{size}', [dictionaryController::class, 'getPagesCount']);
+//    Route::get('{language}/{id}', [dictionaryController::class, 'show'])->name("wordShow");
+//});
 
 Route::prefix('dictionary')->group(function () {
-    Route::get('{language}', [dictionaryController::class, 'index'])->name("words");
-    Route::get('{language}/pages/{size}', [dictionaryController::class, 'getPagesCount']);
-    Route::get('{language}/{id}', [dictionaryController::class, 'show'])->name("wordShow");
+    Route::get('/', [DictionaryController::class, 'get']);
 });
 
 Route::prefix('histories')->group(function() {
