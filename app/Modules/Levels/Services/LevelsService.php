@@ -4,6 +4,7 @@ namespace App\Modules\Levels\Services;
 
 use App\Modules\Levels\Repositories\LevelsBlocksRepository;
 use App\Modules\Levels\Repositories\LevelsRepository;
+use App\Modules\Levels\Repositories\LevelsWinConditionsRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class LevelsService
     {
         $level = (new LevelsRepository())->getById($levelID);
         $level->active_blocks = json_decode((new LevelsBlocksRepository())->getBlocksByLevelID($level->id)->blocks);
+        $level->conditions = (new LevelsWinConditionsRepository())->getByLevelId($level->id);
         return $level;
     }
 }
