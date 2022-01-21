@@ -27,6 +27,11 @@ class DictionaryService
         return $search;
     }
 
+    /**
+     * Получить слова
+     * @param Request $request
+     * @return array
+     */
     public function get(Request $request): array
     {
         $repository = new DictionaryRepository();
