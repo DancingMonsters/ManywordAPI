@@ -37,6 +37,7 @@ class DictionaryRepository
     {
         $all = DB::table('words')
             ->where('language', '=', $language)
+            ->where($search)
             ->count();
         $pages = intdiv($all, $size);
         $pages += ($all % $size) == 0 ? 0 : 1;
