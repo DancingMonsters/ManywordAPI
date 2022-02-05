@@ -56,4 +56,34 @@ class DictionaryRepository
         $pages += ($all % $size) == 0 ? 0 : 1;
         return $pages;
     }
+
+    /**
+     * Получить id слова по его имени, части речи и языка
+     * @param string $name
+     * @param int $particle
+     * @param int $language
+     * @return mixed|null
+     */
+    public function getWordIdByName(string $name, int $particle, int $language)
+    {
+        return DB::table('words')
+            ->where('word', '=', $name)
+            ->where('particle', '=', $particle)
+            ->where('language', '=', $language)
+            ->value('id');
+    }
+
+    /**
+     * Добавление слова в словарь
+     * @param string $word
+     * @param int $language
+     * @param int $particle
+     * @param int $length
+     * @return int
+     */
+    public function add(string $word, int $language, int $particle, int $length): int
+    {
+        return DB::table('words')
+            ->insertGetId(['word' => $word, 'language' => $language, 'particle' => $particle, 'length' => $length]);
+    }
 }
