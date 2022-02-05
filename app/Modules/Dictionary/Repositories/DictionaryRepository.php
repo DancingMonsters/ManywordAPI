@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\DB;
 class DictionaryRepository
 {
     /**
+     * Получить весь словарь
+     * @param int $language
+     * @return Collection
+     */
+    public function get(int $language): Collection
+    {
+        return DB::table('words')
+            ->select('*')
+            ->where('language', '=', $language)
+            ->get();
+    }
+
+    /**
      * Получение страницы слов
      * @param int $pageStart
      * @param int $language
