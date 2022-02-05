@@ -37,19 +37,23 @@ class DictionaryService
         $repository = new DictionaryRepository();
         $result = [];
         $language = $request->get('language', 1);
-        $size = $request->get('size', 10);
-        $search = $this->prepareSearch($request);
-        $result['words'] = $repository->getPage(
-            $request->get('page_start', 0),
-            $language,
-            $size,
-            $search
-        );
-        $result['total_pages'] = $repository->getPagesCount(
-            $language,
-            $size,
-            $search
-        );
+        if ($request->filled('page_start')) {
+            $size = $request->get('size', 10);
+            $search = $this->prepareSearch($request);
+            $result['words'] = $repository->getPage(
+                $request->get('page_start', 0),
+                $language,
+                $size,
+                $search
+            );
+            $result['total_pages'] = $repository->getPagesCount(
+                $language,
+                $size,
+                $search
+            );
+        } else {
+            $result['words'] = $repository->get($language);
+        }
         return $result;
     }
 }
