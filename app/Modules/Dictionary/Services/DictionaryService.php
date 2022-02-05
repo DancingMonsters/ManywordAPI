@@ -56,4 +56,17 @@ class DictionaryService
         }
         return $result;
     }
+
+    /**
+     * Добавить слово
+     * @param Request $request
+     * @return int
+     */
+    public function createWord(Request $request): int
+    {
+        $word = $request->post('word');
+        $language = $request->post('language');
+        $particle = $request->post('particle');
+        return (new DictionaryRepository())->add($word, $language, $particle, mb_strlen($word));
+    }
 }
