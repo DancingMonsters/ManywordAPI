@@ -31,6 +31,7 @@ use App\Http\Controllers\WeightsController;
 
 Route::prefix('dictionary')->group(function () {
     Route::get('/', [DictionaryController::class, 'get']);
+    Route::post('/', [DictionaryController::class, 'createWord']);
 });
 
 Route::prefix('histories')->group(function() {
