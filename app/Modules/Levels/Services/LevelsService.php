@@ -5,6 +5,7 @@ namespace App\Modules\Levels\Services;
 use App\Modules\Levels\Repositories\LevelsBlocksRepository;
 use App\Modules\Levels\Repositories\LevelsRepository;
 use App\Modules\Levels\Repositories\LevelsWinConditionsRepository;
+use App\Modules\Levels\Repositories\LevelsWordsRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -19,12 +20,21 @@ class LevelsService
      */
     public function get(Request $request): Collection
     {
-        return (new LevelsRepository())->get(
-            $request->has('only_id') ? ['id', 'description'] : ['*'],
+        $levels = (new LevelsRepository())->get(
+            $request->has('only_id') ? ['id', 'description', 'published'] : ['*'],
             $request->query('language'),
             $request->query('history_id'),
             $request->query('published')
         );
+        $winConditionsRepository = new LevelsWinConditionsRepository();
+        $blocksRepository = new LevelsBlocksRepository();
+        $wordsRepository = new LevelsWordsRepository();
+        $levels->map(function ($level) use ($winConditionsRepository, $blocksRepository, $wordsRepository) {
+            $level->win_conditions = $winConditionsRepository->getByLevelId($level->id);
+            $level->active_blocks = json_decode($blocksRepository->getBlocksByLevelID($level->id)->blocks);
+            $level->words = $wordsRepository->getByLevelId($level->id);
+        });
+        return $levels;
     }
 
     /**
@@ -36,7 +46,8 @@ class LevelsService
     {
         $level = (new LevelsRepository())->getById($levelID);
         $level->active_blocks = json_decode((new LevelsBlocksRepository())->getBlocksByLevelID($level->id)->blocks);
-        $level->conditions = (new LevelsWinConditionsRepository())->getByLevelId($level->id);
+        $level->win_conditions = (new LevelsWinConditionsRepository())->getByLevelId($level->id);
+        $level->words = (new LevelsWordsRepository())->getByLevelId($level->id);
         return $level;
     }
 }
