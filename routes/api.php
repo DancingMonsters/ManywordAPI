@@ -58,6 +58,9 @@ Route::prefix('services')->group(function () {
     Route::get('languages', [ServicesController::class, 'getLanguages']);
     Route::get('levels/types', [ServicesController::class, 'getLevelsTypes']);
     Route::get('levels/conditions', [ServicesController::class, 'getLevelsWinConditionsTypes']);
+    Route::get('languages/alphabet', [ServicesController::class, 'getAlphabet']);
+    Route::get('languages/weights', [ServicesController::class, 'getWeights']);
+    Route::get('words/particles', [ServicesController::class, 'getParticles']);
 });
 
 Route::get('send', [LevelsController::class, 'send']);
