@@ -27,4 +27,14 @@ class LevelsController
     {
         return response()->json((new LevelsService())->getById($id));
     }
+
+    /**
+     * Обновление уровня по id
+     * @param int $id
+     * @param Request $request
+     */
+    public function setById(int $id, Request $request)
+    {
+        (new LevelsService())->setById($id, $request);
+    }
 }
