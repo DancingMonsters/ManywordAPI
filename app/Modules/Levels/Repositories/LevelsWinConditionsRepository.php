@@ -8,16 +8,30 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsWinConditionsRepository
 {
+    private string $table = 'levels_win_conditions';
+
     /**
-     * Получить условия победы уровня
+     * Получить условия победы уровня по его id
      * @param int $levelID
      * @return Model|Builder|object|null
      */
     public function getByLevelId(int $levelID)
     {
-        return DB::table('levels_win_conditions')
-            ->select('type', 'value')
+        return DB::table($this->table)
+            ->select('type', 'value', 'id')
             ->where('level_id', '=', $levelID)
             ->first();
+    }
+
+    /**
+     * Обновление условий победы по id
+     * @param int $winID
+     * @param array $values
+     */
+    public function updateById(int $winID, array $values)
+    {
+        DB::table($this->table)
+            ->where('id', '=', $winID)
+            ->update($values);
     }
 }
