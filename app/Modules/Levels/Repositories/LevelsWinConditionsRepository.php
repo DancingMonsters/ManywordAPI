@@ -34,4 +34,13 @@ class LevelsWinConditionsRepository
             ->where('id', '=', $winID)
             ->update($values);
     }
+
+    /**
+     * @param array $values
+     */
+    public function addConditions(array $values)
+    {
+        DB::table($this->table)
+            ->insert($values);
+    }
 }

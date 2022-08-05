@@ -20,13 +20,22 @@ class LevelsBlocksRepository
 
     /**
      * Обновление блоков уровня
-     * @param int $blocksID
-     * @param string $blocks
+     * @param array $values
+     * @param int|null $blocksId
      */
-    public function updateBlocksByID(int $blocksID, string $blocks)
+    public function updateBlocksById(array $values, int $blocksId)
     {
         DB::table('levels_blocks')
-            ->where('id', '=', $blocksID)
-            ->update(['blocks' => $blocks]);
+            ->where('id', '=', $blocksId)
+            ->update($values);
+    }
+
+    /**
+     * @param array $values
+     */
+    public function addBlocks(array $values)
+    {
+        DB::table('levels_blocks')
+            ->insert($values);
     }
 }

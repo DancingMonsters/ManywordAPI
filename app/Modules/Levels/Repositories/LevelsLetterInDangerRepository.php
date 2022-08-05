@@ -34,4 +34,13 @@ class LevelsLetterInDangerRepository
             ->where('id', '=', $id)
             ->update($values);
     }
+
+    /**
+     * @param array $values
+     */
+    public function addLetterInDanger(array $values)
+    {
+        DB::table($this->table)
+            ->insert($values);
+    }
 }

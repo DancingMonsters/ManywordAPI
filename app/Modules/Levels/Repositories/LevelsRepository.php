@@ -49,14 +49,24 @@ class LevelsRepository
 
     /**
      * Редактирование уровня по id
-     * @param int $levelID
+     * @param array $values
+     * @param int $levelId
+     * @return int
+     */
+    public function set(array $values, int $levelId): int
+    {
+        return DB::table($this->table)
+            ->where('id', '=', $levelId)
+            ->update($values);
+    }
+
+    /**
      * @param array $values
      * @return int
      */
-    public function set(int $levelID, array $values): int
+    public function add(array $values): int
     {
         return DB::table($this->table)
-            ->where('id', '=', $levelID)
-            ->update($values);
+            ->insertGetId($values);
     }
 }

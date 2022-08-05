@@ -30,11 +30,11 @@ class LevelsController
 
     /**
      * Обновление уровня по id
-     * @param int $id
      * @param Request $request
+     * @param int|null $id
      */
-    public function setById(int $id, Request $request)
+    public function setById(Request $request, int $id = null)
     {
-        (new LevelsService())->setById($id, $request);
+        (new LevelsService())->setById($request, $id);
     }
 }

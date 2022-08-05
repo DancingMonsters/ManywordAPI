@@ -31,7 +31,7 @@ use App\Http\Controllers\WeightsController;
 
 Route::prefix('dictionary')->group(function () {
     Route::get('/', [DictionaryController::class, 'get']);
-    Route::post('/', [DictionaryController::class, 'createWord']);
+    Route::patch('/', [DictionaryController::class, 'createWord']);
 });
 
 Route::prefix('histories')->group(function() {
@@ -41,7 +41,7 @@ Route::prefix('histories')->group(function() {
 Route::prefix('levels')->group(function () {
     Route::get('/', [LevelsController::class, 'get']);
     Route::get('{id}', [LevelsController::class, 'getById'])->where('id', '[0-9]+');
-    Route::patch('{id}', [LevelsController::class, 'setById'])->where('id', '[0-9]+');
+    Route::patch('{id?}', [LevelsController::class, 'setById'])->where('id', '[0-9]+');
 });
 
 Route::prefix('alphabet')->group(function () {

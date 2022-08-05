@@ -59,35 +59,51 @@ class LevelsService
 
     /**
      * Обновление уровня по id
-     * @param int $levelID
      * @param Request $request
+     * @param int|null $levelID
      */
-    public function setById(int $levelID, Request $request)
+    public function setById(Request $request, int $levelID = null)
     {
         $update = $this->getUpdate($request);
-        if ($request->filled('active_blocks_id')) {
-            (new LevelsBlocksRepository())->updateBlocksByID(
-                $request->post('active_blocks_id'),
-                json_encode($request->filled('active_blocks'))
+        $newLevelID = (new LevelsRepository())->set($update, $levelID);
+
+        if ($request->filled('changes.active_blocks_id')) {
+            $levelBlocksRepository = new LevelsBlocksRepository();
+            $levelBlocksRepository->updateBlocksById(
+                ['blocks' => json_encode($request->input('changes.active_blocks'))],
+                $request->input('changes.active_blocks_id')
             );
+        } elseif ($levelID === null) {
+            $levelBlocksRepository = new LevelsBlocksRepository();
+            $levelBlocksRepository->addBlocks([
+                'blocks' => json_encode($request->input('changes.active_blocks')),
+                'level_id' => $newLevelID
+            ]);
         }
-        if ($request->filled('win_conditions')) {
-            $winUpdate = [];
-            if ($request->filled('win_conditions.type')) {
-                $winUpdate[] = ['type' => $request->post('win_conditions.type')];
+        if ($request->filled('changes.win_conditions')) {
+            $levelWinConditionsRepository = new LevelsWinConditionsRepository();
+            if ($request->filled('changes.win_conditions.id')) {
+                $winUpdate = [];
+                if ($request->filled('changes.win_conditions.type')) {
+                    $winUpdate["type"] = $request->input('changes.win_conditions.type');
+                }
+                if ($request->filled('changes.win_conditions.value')) {
+                    $winUpdate["value"] = $request->input('changes.win_conditions.value');
+                }
+                $levelWinConditionsRepository->updateById(
+                    $request->input('changes.win_conditions.id'),
+                    $winUpdate
+                );
+            } else {
+                $values = $request->input('changes.win_conditions');
+                $values['level_id'] = $newLevelID;
+                $levelWinConditionsRepository->addConditions($values);
             }
-            if ($request->filled('win_conditions.value')) {
-                $winUpdate[] = ['value' => $request->post('win_conditions.value')];
-            }
-            (new LevelsWinConditionsRepository())->updateById(
-                $request->post('win_conditions.id'),
-                $winUpdate
-            );
         }
-        if ($request->filled('words')) {
+        if ($request->filled('changes.words')) {
             $levelsWordsRepository = new LevelsWordsRepository();
             $currentWords = $levelsWordsRepository->getByLevelId($levelID)->pluck('id');
-            $newWords = collect($request->post('words'));
+            $newWords = collect($request->input('changes.words'));
             $add = $newWords->diff($currentWords);
             $delete = $currentWords->diff($newWords);
             $add->map(function ($item) use ($levelID, $levelsWordsRepository) {
@@ -97,28 +113,35 @@ class LevelsService
                 $levelsWordsRepository->deleteByLevelId($levelID, $item);
             });
         }
-        if ($request->filled('letter_in_danger')) {
-            $lidUpdate = [];
-            if ($request->filled('letter_in_danger.count')) {
-                $lidCount = $request->post('letter_in_danger.count');
-                $lidUpdate[] = ['count' => $lidCount];
-                if (intval($lidCount) === 0) {
-                    $lidUpdate[] = ['weights' => 0];
-                    $lidUpdate[] = ['time' => 0];
+        if ($request->filled('changes.letter_in_danger')) {
+            $levelsLetterInDangerRepository = new LevelsLetterInDangerRepository();
+            if ($request->filled('changes.letter_in_danger.id')) {
+                $lidUpdate = [];
+                if ($request->filled('changes.letter_in_danger.count')) {
+                    $lidCount = $request->input('changes.letter_in_danger.count');
+                    $lidUpdate[] = ['count' => $lidCount];
+                    if (intval($lidCount) === 0) {
+                        $lidUpdate[] = ['weights' => 0];
+                        $lidUpdate[] = ['time' => 0];
+                    }
                 }
+                if ($request->filled('changes.letter_in_danger.weights')) {
+                    $lidUpdate[] = ['weights' => $request->input('changes.letter_in_danger.weights')];
+                }
+                if ($request->filled('changes.letter_in_danger.time')) {
+                    $lidUpdate[] = ['time' => $request->input('changes.letter_in_danger.time')];
+                }
+                $levelsLetterInDangerRepository->updateById(
+                    $request->input('changes.letter_in_danger.id'),
+                    $lidUpdate
+                );
+            } else {
+                $values = $request->input('changes.letter_in_danger');
+                $values['level_id'] = $newLevelID;
+                dd($values);
+                $levelsLetterInDangerRepository->addLetterInDanger($values);
             }
-            if ($request->filled('letter_in_danger.weights')) {
-                $lidUpdate[] = ['weights' => $request->post('letter_in_danger.weights')];
-            }
-            if ($request->filled('letter_in_danger.time')) {
-                $lidUpdate[] = ['time' => $request->post('letter_in_danger.time')];
-            }
-            (new LevelsLetterInDangerRepository())->updateById(
-                $request->post('letter_in_danger.id'),
-                $lidUpdate
-            );
         }
-        (new LevelsRepository())->set($levelID, $update);
     }
 
     /**
@@ -129,27 +152,27 @@ class LevelsService
     private function getUpdate(Request $request): array
     {
         $result = [];
-        if ($request->filled('history_id')) {
-            $result['history_id'] = $request->post('history_id');
+        if ($request->filled('changes.history_id')) {
+            $result['history_id'] = $request->input('changes.history_id');
         }
-        if ($request->filled('published')) {
-            $result['published'] = $request->post('published');
+        if ($request->filled('changes.published')) {
+            $result['published'] = $request->input('changes.published');
         }
-        if ($request->filled('particles')) {
-            $result['particles'] = $request->post('particles');
+        if ($request->filled('changes.particles')) {
+            $result['particles'] = $request->input('changes.particles');
         }
-        if ($request->filled('description')) {
-            $result['description'] = $request->post('description');
+        if ($request->filled('changes.description')) {
+            $result['description'] = $request->input('changes.description');
         }
-        if ($request->filled('type_id')) {
-            $typeID = $request->post('type_id');
+        if ($request->filled('changes.type_id')) {
+            $typeID = $request->input('changes.type_id');
             if ($typeID == 2) {
                 $result['time'] = 0;
             }
             $result['type_id'] = $typeID;
         }
-        if ($request->filled('time')) {
-            $result['time'] = $request->post('time');
+        if ($request->filled('changes.time')) {
+            $result['time'] = $request->input('changes.time');
         }
         return $result;
     }
