@@ -12,3 +12,9 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 quickstart.zip
+
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
