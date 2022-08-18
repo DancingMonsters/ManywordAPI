@@ -15,8 +15,8 @@ class DictionaryService
     private function prepareSearch(Request $request): array
     {
         $search = [];
-        if ($request->filled('particle')) {
-            $search[] = ['particle', '=', $request->get('particle')];
+        if ($request->filled('particles')) {
+            $search[] = ['particle', '=', $request->get('particles')];
         }
         if ($request->filled('length')) {
             $search[] = ['length', '=', $request->get('length')];
