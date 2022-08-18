@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsRepository
 {
-    private string $table = 'levels';
+    private $table = 'levels';
 
     /**
      * Получение уровней
