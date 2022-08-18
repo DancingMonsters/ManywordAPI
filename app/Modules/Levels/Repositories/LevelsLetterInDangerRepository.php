@@ -43,4 +43,11 @@ class LevelsLetterInDangerRepository
         DB::table($this->table)
             ->insert($values);
     }
+
+    public function deleteLetterInDangerByLevelId(int $levelId)
+    {
+        DB::table($this->table)
+            ->where('level_id', '=', $levelId)
+            ->delete();
+    }
 }
