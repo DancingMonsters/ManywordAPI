@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsBlocksRepository
 {
-
-    private string $table = 'levels_blocks';
     /**
      * Получение блоков уровня по его id
      * @param int $levelID
