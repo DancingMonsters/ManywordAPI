@@ -42,6 +42,7 @@ Route::prefix('levels')->group(function () {
     Route::get('/', [LevelsController::class, 'get']);
     Route::get('{id}', [LevelsController::class, 'getById'])->where('id', '[0-9]+');
     Route::patch('{id?}', [LevelsController::class, 'setById'])->where('id', '[0-9]+');
+    Route::delete('{id}', [LevelsController::class, 'deleteLevel'])->where('id', '[0-9]+');
 });
 
 Route::prefix('alphabet')->group(function () {

@@ -33,8 +33,13 @@ class LevelsController
      * @param Request $request
      * @param int|null $id
      */
-    public function setById(Request $request, int $id = null)
+    public function setById(Request $request, ?int $id = null)
     {
         (new LevelsService())->setById($request, $id);
+    }
+
+    public function deleteLevel(int $id)
+    {
+        (new LevelsService())->deleteLevel($id);
     }
 }

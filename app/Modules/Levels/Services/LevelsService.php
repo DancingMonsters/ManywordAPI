@@ -2,6 +2,7 @@
 
 namespace App\Modules\Levels\Services;
 
+use App\Modules\Levels\Models\Levels;
 use App\Modules\Levels\Repositories\LevelsBlocksRepository;
 use App\Modules\Levels\Repositories\LevelsLetterInDangerRepository;
 use App\Modules\Levels\Repositories\LevelsRepository;
@@ -62,85 +63,41 @@ class LevelsService
      * @param Request $request
      * @param int|null $levelID
      */
-    public function setById(Request $request, int $levelID = null)
+    public function setById(Request $request, ?int $levelID = null)
     {
         $update = $this->getUpdate($request);
-        $newLevelID = (new LevelsRepository())->set($update, $levelID);
+        $newLevelID = null;
+        if (!empty($update)) {
+            $levelsRepository = new LevelsRepository();
+            if ($levelID !== null) {
+                $levelsRepository->set($update, $levelID);
+            } else {
+                do {
+                    $uniqueId = $this->generateUniqueId(4);
+                } while (Levels::where('unique_id', '=', $uniqueId)->count() > 0);
+                $update['unique_id'] = $uniqueId;
+                $newLevelID = $levelsRepository->add($update);
+            }
+        }
+
+        $levelsBlocksService = new LevelsBlocksService();
 
         if ($request->filled('changes.active_blocks_id')) {
-            $levelBlocksRepository = new LevelsBlocksRepository();
-            $levelBlocksRepository->updateBlocksById(
-                ['blocks' => json_encode($request->input('changes.active_blocks'))],
-                $request->input('changes.active_blocks_id')
-            );
-        } elseif ($levelID === null) {
-            $levelBlocksRepository = new LevelsBlocksRepository();
-            $levelBlocksRepository->addBlocks([
-                'blocks' => json_encode($request->input('changes.active_blocks')),
-                'level_id' => $newLevelID
-            ]);
+            $levelsBlocksService->updateBlocks($request);
+        } elseif ($levelID === null && $newLevelID !== null) {
+            $levelsBlocksService->addBlocks($request, $newLevelID);
         }
+
         if ($request->filled('changes.win_conditions')) {
-            $levelWinConditionsRepository = new LevelsWinConditionsRepository();
-            if ($request->filled('changes.win_conditions.id')) {
-                $winUpdate = [];
-                if ($request->filled('changes.win_conditions.type')) {
-                    $winUpdate["type"] = $request->input('changes.win_conditions.type');
-                }
-                if ($request->filled('changes.win_conditions.value')) {
-                    $winUpdate["value"] = $request->input('changes.win_conditions.value');
-                }
-                $levelWinConditionsRepository->updateById(
-                    $request->input('changes.win_conditions.id'),
-                    $winUpdate
-                );
-            } else {
-                $values = $request->input('changes.win_conditions');
-                $values['level_id'] = $newLevelID;
-                $levelWinConditionsRepository->addConditions($values);
-            }
+            (new LevelsWinConditionsService())->setWinConditions($request, $newLevelID);
         }
+
         if ($request->filled('changes.words')) {
-            $levelsWordsRepository = new LevelsWordsRepository();
-            $currentWords = $levelsWordsRepository->getByLevelId($levelID)->pluck('id');
-            $newWords = collect($request->input('changes.words'));
-            $add = $newWords->diff($currentWords);
-            $delete = $currentWords->diff($newWords);
-            $add->map(function ($item) use ($levelID, $levelsWordsRepository) {
-                $levelsWordsRepository->addByLevelId($levelID, $item);
-            });
-            $delete->map(function ($item) use ($levelID, $levelsWordsRepository) {
-                $levelsWordsRepository->deleteByLevelId($levelID, $item);
-            });
+            (new LevelsWordsService())->setWords($request, $levelID ?? $newLevelID, $levelID === null);
         }
+
         if ($request->filled('changes.letter_in_danger')) {
-            $levelsLetterInDangerRepository = new LevelsLetterInDangerRepository();
-            if ($request->filled('changes.letter_in_danger.id')) {
-                $lidUpdate = [];
-                if ($request->filled('changes.letter_in_danger.count')) {
-                    $lidCount = $request->input('changes.letter_in_danger.count');
-                    $lidUpdate[] = ['count' => $lidCount];
-                    if (intval($lidCount) === 0) {
-                        $lidUpdate[] = ['weights' => 0];
-                        $lidUpdate[] = ['time' => 0];
-                    }
-                }
-                if ($request->filled('changes.letter_in_danger.weights')) {
-                    $lidUpdate[] = ['weights' => $request->input('changes.letter_in_danger.weights')];
-                }
-                if ($request->filled('changes.letter_in_danger.time')) {
-                    $lidUpdate[] = ['time' => $request->input('changes.letter_in_danger.time')];
-                }
-                $levelsLetterInDangerRepository->updateById(
-                    $request->input('changes.letter_in_danger.id'),
-                    $lidUpdate
-                );
-            } else {
-                $values = $request->input('changes.letter_in_danger');
-                $values['level_id'] = $newLevelID;
-                dd($values);
-                $levelsLetterInDangerRepository->addLetterInDanger($values);
-            }
+            (new LevelsLetterInDangerService())->setLetterInDanger($request, $levelID ?? $newLevelID);
         }
     }
 
@@ -164,6 +121,9 @@ class LevelsService
         if ($request->filled('changes.description')) {
             $result['description'] = $request->input('changes.description');
         }
+        if ($request->filled('changes.language')) {
+            $result['language'] = $request->input('changes.language');
+        }
         if ($request->filled('changes.type_id')) {
             $typeID = $request->input('changes.type_id');
             if ($typeID == 2) {
@@ -175,5 +135,41 @@ class LevelsService
             $result['time'] = $request->input('changes.time');
         }
         return $result;
+    }
+
+    /**
+     * @param int $length
+     * @return string
+     */
+    private function generateUniqueId(int $length): string
+    {
+        $uniqueId = "";
+        for($i = 0; $i < $length; $i ++) {
+            $r = rand(1,3);
+            switch($r) {
+                case 1:
+                    $l = chr(rand(65,90));
+                    $uniqueId .= $l;
+                    break;
+                case 2:
+                    $l = chr(rand(97,122));
+                    $uniqueId .= $l;
+                    break;
+                case 3:
+                    $l = rand(0, 9);
+                    $uniqueId .= $l;
+                    break;
+            }
+        }
+        return $uniqueId;
+    }
+
+    public function deleteLevel(int $id)
+    {
+        (new LevelsWordsRepository())->deleteAllWordsByLevelId($id);
+        (new LevelsWinConditionsRepository())->deleteConditionsByLevelId($id);
+        (new LevelsLetterInDangerRepository())->deleteLetterInDangerByLevelId($id);
+        (new LevelsBlocksRepository())->deleteBlocksByLevelId($id);
+        (new LevelsRepository())->delete($id);
     }
 }
