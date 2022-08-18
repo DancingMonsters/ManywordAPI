@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsWinConditionsRepository
 {
-    private string $table = 'levels_win_conditions';
-
     /**
      * Получить условия победы уровня по его id
      * @param int $levelID
@@ -17,7 +15,7 @@ class LevelsWinConditionsRepository
      */
     public function getByLevelId(int $levelID)
     {
-        return DB::table($this->table)
+        return DB::table('levels_win_conditions')
             ->select('type', 'value', 'id')
             ->where('level_id', '=', $levelID)
             ->first();
@@ -30,7 +28,7 @@ class LevelsWinConditionsRepository
      */
     public function updateById(int $winID, array $values)
     {
-        DB::table($this->table)
+        DB::table('levels_win_conditions')
             ->where('id', '=', $winID)
             ->update($values);
     }
@@ -40,13 +38,13 @@ class LevelsWinConditionsRepository
      */
     public function addConditions(array $values)
     {
-        DB::table($this->table)
+        DB::table('levels_win_conditions')
             ->insert($values);
     }
 
     public function deleteConditionsByLevelId(int $levelId)
     {
-        DB::table($this->table)
+        DB::table('levels_win_conditions')
             ->where('level_id', '=', $levelId)
             ->delete();
     }

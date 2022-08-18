@@ -16,7 +16,7 @@ class LevelsBlocksRepository
      * @return Model|Builder|object|null
      */
     public function getBlocksByLevelID(int $levelID) {
-        return DB::table($this->table)
+        return DB::table('levels_blocks')
             ->select('blocks', 'id')
             ->where('level_id', '=', $levelID)
             ->first();
@@ -29,7 +29,7 @@ class LevelsBlocksRepository
      */
     public function updateBlocksById(array $values, int $blocksId)
     {
-        DB::table($this->table)
+        DB::table('levels_blocks')
             ->where('id', '=', $blocksId)
             ->update($values);
     }
@@ -39,13 +39,13 @@ class LevelsBlocksRepository
      */
     public function addBlocks(array $values)
     {
-        DB::table($this->table)
+        DB::table('levels_blocks')
             ->insert($values);
     }
 
     public function deleteBlocksByLevelId(int $levelId)
     {
-        DB::table($this->table)
+        DB::table('levels_blocks')
             ->where('level_id', '=', $levelId)
             ->delete();
     }

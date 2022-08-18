@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsLetterInDangerRepository
 {
-    private string $table = "levels_letter_in_danger";
-
     /**
      * Получение букв в опасности по id уровня
      * @param int $levelId
@@ -17,7 +15,7 @@ class LevelsLetterInDangerRepository
      */
     public function getByLevelId(int $levelId)
     {
-        return DB::table($this->table)
+        return DB::table('levels_letter_in_danger')
             ->select('count', 'weights', 'time', 'id')
             ->where('level_id', '=', $levelId)
             ->first();
@@ -30,7 +28,7 @@ class LevelsLetterInDangerRepository
      */
     public function updateById(int $id, array $values)
     {
-        DB::table($this->table)
+        DB::table('levels_letter_in_danger')
             ->where('id', '=', $id)
             ->update($values);
     }
@@ -40,13 +38,13 @@ class LevelsLetterInDangerRepository
      */
     public function addLetterInDanger(array $values)
     {
-        DB::table($this->table)
+        DB::table('levels_letter_in_danger')
             ->insert($values);
     }
 
     public function deleteLetterInDangerByLevelId(int $levelId)
     {
-        DB::table($this->table)
+        DB::table('levels_letter_in_danger')
             ->where('level_id', '=', $levelId)
             ->delete();
     }

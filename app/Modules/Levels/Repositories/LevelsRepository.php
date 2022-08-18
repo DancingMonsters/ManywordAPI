@@ -9,19 +9,17 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsRepository
 {
-    private $table = 'levels';
-
     /**
      * Получение уровней
      * @param array $fields
      * @param int|null $language
      * @param int|null $historyID
-     * @param bool $published
+     * @param bool|null $published
      * @return Collection
      */
     public function get(array $fields, int $language = null, int $historyID = null, bool $published = null): Collection
     {
-        return DB::table($this->table)
+        return DB::table('levels')
             ->select($fields)
             ->when($language !== null, function ($query) use ($language) {
                 $query->where('language', '=', $language);
@@ -41,7 +39,7 @@ class LevelsRepository
      * @return Model|Builder|object|null
      */
     public function getById(int $levelID) {
-        return DB::table($this->table)
+        return DB::table('levels')
             ->select('*')
             ->where('id', '=', $levelID)
             ->first();
@@ -55,7 +53,7 @@ class LevelsRepository
      */
     public function set(array $values, int $levelId): int
     {
-        return DB::table($this->table)
+        return DB::table('levels')
             ->where('id', '=', $levelId)
             ->update($values);
     }
@@ -66,13 +64,13 @@ class LevelsRepository
      */
     public function add(array $values): int
     {
-        return DB::table($this->table)
+        return DB::table('levels')
             ->insertGetId($values);
     }
 
     public function delete(int $levelId)
     {
-        DB::table($this->table)
+        DB::table('levels')
             ->delete($levelId);
     }
 }

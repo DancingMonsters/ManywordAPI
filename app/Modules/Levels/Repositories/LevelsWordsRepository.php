@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class LevelsWordsRepository
 {
-    private string $table = 'levels_words';
-
     /**
      * Получение слов уровня
      * @param int $levelId
@@ -16,10 +14,10 @@ class LevelsWordsRepository
      */
     public function getByLevelId(int $levelId): Collection
     {
-        return DB::table($this->table)
+        return DB::table('levels_words')
             ->select('words.*')
-            ->leftJoin('words', 'words.id', '=', $this->table . '.word_id')
-            ->where($this->table . '.level_id', '=', $levelId)
+            ->leftJoin('words', 'words.id', '=', 'levels_words' . '.word_id')
+            ->where('levels_words' . '.level_id', '=', $levelId)
             ->get();
     }
 
@@ -30,7 +28,7 @@ class LevelsWordsRepository
      */
     public function addByLevelId(int $levelId, int $wordId)
     {
-        DB::table($this->table)
+        DB::table('levels_words')
             ->insert(['level_id' => $levelId, 'word_id' => $wordId]);
     }
 
@@ -41,7 +39,7 @@ class LevelsWordsRepository
      */
     public function deleteByLevelId(int $levelId, int $wordId)
     {
-        DB::table($this->table)
+        DB::table('levels_words')
             ->where('word_id', '=', $wordId)
             ->where('level_id', '=', $levelId)
             ->delete();
@@ -49,7 +47,7 @@ class LevelsWordsRepository
 
     public function deleteAllWordsByLevelId(int $levelId)
     {
-        DB::table($this->table)
+        DB::table('levels_words')
             ->where('level_id', '=', $levelId)
             ->delete();
     }
