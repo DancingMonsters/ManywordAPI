@@ -69,4 +69,10 @@ class LevelsRepository
         return DB::table($this->table)
             ->insertGetId($values);
     }
+
+    public function delete(int $levelId)
+    {
+        DB::table($this->table)
+            ->delete($levelId);
+    }
 }
