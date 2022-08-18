@@ -46,4 +46,11 @@ class LevelsWordsRepository
             ->where('level_id', '=', $levelId)
             ->delete();
     }
+
+    public function deleteAllWordsByLevelId(int $levelId)
+    {
+        DB::table($this->table)
+            ->where('level_id', '=', $levelId)
+            ->delete();
+    }
 }
