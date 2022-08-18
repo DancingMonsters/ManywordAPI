@@ -43,4 +43,11 @@ class LevelsWinConditionsRepository
         DB::table($this->table)
             ->insert($values);
     }
+
+    public function deleteConditionsByLevelId(int $levelId)
+    {
+        DB::table($this->table)
+            ->where('level_id', '=', $levelId)
+            ->delete();
+    }
 }
