@@ -2,17 +2,21 @@
 
 namespace App\Modules\Levels\Repositories;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 class LevelsBlocksRepository
 {
+
+    private string $table = 'levels_blocks';
     /**
      * Получение блоков уровня по его id
      * @param int $levelID
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
+     * @return Model|Builder|object|null
      */
     public function getBlocksByLevelID(int $levelID) {
-        return DB::table('levels_blocks')
+        return DB::table($this->table)
             ->select('blocks', 'id')
             ->where('level_id', '=', $levelID)
             ->first();
@@ -25,7 +29,7 @@ class LevelsBlocksRepository
      */
     public function updateBlocksById(array $values, int $blocksId)
     {
-        DB::table('levels_blocks')
+        DB::table($this->table)
             ->where('id', '=', $blocksId)
             ->update($values);
     }
@@ -35,7 +39,14 @@ class LevelsBlocksRepository
      */
     public function addBlocks(array $values)
     {
-        DB::table('levels_blocks')
+        DB::table($this->table)
             ->insert($values);
+    }
+
+    public function deleteBlocksByLevelId(int $levelId)
+    {
+        DB::table($this->table)
+            ->where('level_id', '=', $levelId)
+            ->delete();
     }
 }
