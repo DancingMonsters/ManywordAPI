@@ -22,6 +22,9 @@ class LevelsWordsService
             $currentWords = new Collection();
         }
         $add = $newWords->diff($currentWords);
+        if ($newLevel) {
+            $add = $add->pluck('id');
+        }
         $add->map(function ($item) use ($levelId, $levelsWordsRepository) {
             $levelsWordsRepository->addByLevelId($levelId, $item);
         });
