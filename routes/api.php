@@ -30,29 +30,30 @@ use App\Http\Controllers\WeightsController;
 //});
 
 Route::prefix('dictionary')->group(function () {
-    Route::get('/', [DictionaryController::class, 'get']);
-    Route::patch('/', [DictionaryController::class, 'createWord']);
+    Route::get('/', [DictionaryController::class, 'get']); //получение списка слов
+    Route::patch('/', [DictionaryController::class, 'createWord']); //создание слова
+    Route::get('/check_word', [DictionaryController::class, 'checkWord']); //проверка слова на существование
 });
 
 Route::prefix('histories')->group(function() {
-    Route::get('/', [HistoriesController::class, 'get']);
+    Route::get('/', [HistoriesController::class, 'get']); //получение списка историй
 });
 
 Route::prefix('levels')->group(function () {
-    Route::get('/', [LevelsController::class, 'get']);
-    Route::get('{id}', [LevelsController::class, 'getById'])->where('id', '[0-9]+');
-    Route::patch('{id?}', [LevelsController::class, 'setById'])->where('id', '[0-9]+');
-    Route::delete('{id}', [LevelsController::class, 'deleteLevel'])->where('id', '[0-9]+');
+    Route::get('/', [LevelsController::class, 'get']); //получение списка уровней
+    Route::get('{id}', [LevelsController::class, 'getById'])->where('id', '[0-9]+'); //получение уровня
+    Route::patch('{id?}', [LevelsController::class, 'setById'])->where('id', '[0-9]+'); //обновление уровня
+    Route::delete('{id}', [LevelsController::class, 'deleteLevel'])->where('id', '[0-9]+'); //удаление уровня
 });
 
 Route::prefix('alphabet')->group(function () {
-    Route::post('{language}/add', [AlphabetsController::class, 'add']);
-    Route::get('{language}', [AlphabetsController::class, 'get']);
+    Route::post('{language}/add', [AlphabetsController::class, 'add']); //добавление нового алфавита
+    Route::get('{language}', [AlphabetsController::class, 'get']); //получение алфавита
 });
 
 Route::prefix('weights')->group(function () {
-    Route::post('{language}/add', [WeightsController::class, 'add']);
-    Route::get('{language}', [WeightsController::class, 'get']);
+    Route::post('{language}/add', [WeightsController::class, 'add']); //добавление весов букв для языка
+    Route::get('{language}', [WeightsController::class, 'get']); //получение весов букв для языка
 });
 
 Route::prefix('services')->group(function () {
