@@ -9,12 +9,12 @@ class LanguagesAlphabetService
 {
     /**
      * Получение алфавита языка
-     * @param Request $request
+     * @param int $languageId
      * @return mixed
      */
-    public function get(Request $request)
+    public function get(int $languageId)
     {
-        $alphabet = (new LanguagesAlphabetRepository())->get($request->query('language', 1));
+        $alphabet = (new LanguagesAlphabetRepository())->get($languageId);
         return json_decode($alphabet);
     }
 }
