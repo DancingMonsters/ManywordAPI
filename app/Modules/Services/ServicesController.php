@@ -62,9 +62,9 @@ class ServicesController
      * @param Request $request
      * @return JsonResponse
      */
-    public function getAlphabet(LanguagesAlphabetService $alphabetService, Request $request): JsonResponse
+    public function getAlphabet(LanguagesAlphabetService $alphabetService, int $languageId): JsonResponse
     {
-        return response()->json($alphabetService->get($request));
+        return response()->json($alphabetService->get($languageId));
     }
 
     /**
