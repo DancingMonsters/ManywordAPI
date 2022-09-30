@@ -48,7 +48,7 @@ Route::prefix('levels')->group(function () {
 
 Route::prefix('alphabet')->group(function () {
     Route::post('{language}/add', [AlphabetsController::class, 'add']); //добавление нового алфавита
-    Route::get('{language}', [AlphabetsController::class, 'get']); //получение алфавита
+    Route::get('{language}', [ServicesController::class, 'getAlphabet']); //получение алфавита
 });
 
 Route::prefix('weights')->group(function () {
