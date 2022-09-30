@@ -9,13 +9,20 @@ use Illuminate\Http\Request;
 
 class DictionaryController
 {
+    private DictionaryService $dictionaryService;
+
+    public function __construct()
+    {
+        $this->dictionaryService = new DictionaryService();
+    }
+
     /**
      * @param Request $request
      * @return JsonResponse
      */
     public function get(Request $request): JsonResponse
     {
-        return response()->json((new DictionaryService())->get($request));
+        return response()->json($this->dictionaryService->get($request));
     }
 
     /**
@@ -29,7 +36,17 @@ class DictionaryController
         if (!$formService->validate()) {
             return response()->json(['error' => 1, 'messages' => $formService->messages]);
         } else {
-            return response()->json((new DictionaryService())->createWord($request));
+            return response()->json($this->dictionaryService->createWord($request));
         }
+    }
+
+    /**
+     * Проверка слова на существование
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function checkWord(Request $request): JsonResponse
+    {
+        return response()->json($this->dictionaryService->checkWord($request));
     }
 }
