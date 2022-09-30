@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class DictionaryService
 {
+    private DictionaryRepository $dictionaryRepository;
+
+    public function __construct()
+    {
+        $this->dictionaryRepository = new DictionaryRepository();
+    }
+
     /**
      * Подготовить wheres для поиска
      * @param Request $request
@@ -34,25 +41,24 @@ class DictionaryService
      */
     public function get(Request $request): array
     {
-        $repository = new DictionaryRepository();
         $result = [];
         $language = $request->get('language', 1);
         if ($request->filled('page_start')) {
             $size = $request->get('size', 10);
             $search = $this->prepareSearch($request);
-            $result['words'] = $repository->getPage(
+            $result['words'] = $this->dictionaryRepository->getPage(
                 $request->get('page_start', 0),
                 $language,
                 $size,
                 $search
             );
-            $result['total_pages'] = $repository->getPagesCount(
+            $result['total_pages'] = $this->dictionaryRepository->getPagesCount(
                 $language,
                 $size,
                 $search
             );
         } else {
-            $result['words'] = $repository->get($language);
+            $result['words'] = $this->dictionaryRepository->get($language);
         }
         return $result;
     }
@@ -67,6 +73,17 @@ class DictionaryService
         $word = $request->post('word');
         $language = $request->post('language');
         $particle = $request->post('particle');
-        return (new DictionaryRepository())->add($word, $language, $particle, mb_strlen($word));
+        return $this->dictionaryRepository->add($word, $language, $particle, mb_strlen($word));
+    }
+
+    /**
+     * Проверка слова на существование
+     * @param Request $request
+     * @return bool
+     */
+    public function checkWord(Request $request): bool
+    {
+        $word = $this->dictionaryRepository->checkWord($request->query('word'));
+        return ($word !== null);
     }
 }
