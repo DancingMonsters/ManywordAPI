@@ -86,4 +86,16 @@ class DictionaryRepository
         return DB::table('words')
             ->insertGetId(['word' => $word, 'language' => $language, 'particle' => $particle, 'length' => $length]);
     }
+
+    /**
+     * Проверка на существование слова
+     * @param string $word
+     * @return mixed|null
+     */
+    public function checkWord(string $word)
+    {
+        return DB::table('words')
+            ->where('word', '=', $word)
+            ->value('id');
+    }
 }
