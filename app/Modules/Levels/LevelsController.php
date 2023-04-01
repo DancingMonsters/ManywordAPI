@@ -42,4 +42,15 @@ class LevelsController
     {
         (new LevelsService())->deleteLevel($id);
     }
+
+    /**
+     * Получение следующего уровня
+     * @param int $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function next(int $id, Request $request): JsonResponse
+    {
+        return response()->json((new LevelsService())->nextLevelById($id));
+    }
 }
