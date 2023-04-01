@@ -73,4 +73,14 @@ class LevelsRepository
         DB::table('levels')
             ->delete($levelId);
     }
+
+    public function getNextLevelById(int $id, int $language)
+    {
+        return DB::table('levels')
+            ->select('*')
+            ->where('id', '>', $id)
+            ->where('language', $language)
+            ->where('published', 1)
+            ->first();
+    }
 }
