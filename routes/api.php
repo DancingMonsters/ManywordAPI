@@ -41,7 +41,7 @@ Route::prefix('histories')->group(function() {
 
 Route::prefix('levels')->group(function () {
     Route::get('/', [LevelsController::class, 'get']); //получение списка уровней
-    Route::get('next/{id}', [LevelsController::class], 'next');
+    Route::get('next/{id}', [LevelsController::class, 'next']);
     Route::get('{id}', [LevelsController::class, 'getById'])->where('id', '[0-9]+'); //получение уровня
     Route::patch('{id?}', [LevelsController::class, 'setById'])->where('id', '[0-9]+'); //обновление уровня
     Route::delete('{id}', [LevelsController::class, 'deleteLevel'])->where('id', '[0-9]+'); //удаление уровня
