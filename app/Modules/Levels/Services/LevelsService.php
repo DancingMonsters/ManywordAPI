@@ -175,7 +175,7 @@ class LevelsService
 
     public function nextLevelById(int $id, Request $request)
     {
-        $language = $request->input('language');
+        $language = $request->input('language', 1);
         $level = (new LevelsRepository())->getNextLevelById($id, $language);
         $blocks = (new LevelsBlocksRepository())->getBlocksByLevelID($level->id);
         $level->active_blocks = json_decode($blocks->blocks);
