@@ -172,4 +172,17 @@ class LevelsService
         (new LevelsBlocksRepository())->deleteBlocksByLevelId($id);
         (new LevelsRepository())->delete($id);
     }
+
+    public function nextLevelById(int $id, Request $request)
+    {
+        $language = $request->input('language');
+        $level = (new LevelsRepository())->getNextLevelById($id, $language);
+        $blocks = (new LevelsBlocksRepository())->getBlocksByLevelID($level->id);
+        $level->active_blocks = json_decode($blocks->blocks);
+        $level->active_blocks_id = $blocks->id;
+        $level->win_conditions = (new LevelsWinConditionsRepository())->getByLevelId($level->id);
+        $level->words = (new LevelsWordsRepository())->getByLevelId($level->id);
+        $level->letter_in_danger = (new LevelsLetterInDangerRepository())->getByLevelId($level->id);
+        return $level;
+    }
 }
