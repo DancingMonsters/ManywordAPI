@@ -51,6 +51,6 @@ class LevelsController
      */
     public function next(int $id, Request $request): JsonResponse
     {
-        return response()->json((new LevelsService())->nextLevelById($id));
+        return response()->json((new LevelsService())->nextLevelById($id, $request));
     }
 }
