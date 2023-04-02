@@ -76,6 +76,7 @@ class LevelsRepository
 
     public function getNextLevelById(int $id, int $language)
     {
+        dd($id);
         return DB::table('levels')
             ->select('levels.*', 'particles.name as particles_name')
             ->leftJoin('particles', 'particles.id', '=', 'levels.particles')
