@@ -76,20 +76,13 @@ class LevelsRepository
 
     public function getNextLevelById(int $id, int $language)
     {
-        $query = DB::table('levels');
-        $query->select('levels.*', 'particles.name as particles_name');
-        $query->leftJoin('particles', 'particles.id', '=', 'levels.particles');
-        $query->where('levels.id', '>', $id);
-        $query->where('levels.language', $language);
-        $query->where('levels.published', 1);
-        $query->first();
-        echo $query->toSql();
         return DB::table('levels')
             ->select('levels.*', 'particles.name as particles_name')
             ->leftJoin('particles', 'particles.id', '=', 'levels.particles')
             ->where('levels.id', '>', $id)
             ->where('levels.language', $language)
             ->where('levels.published', 1)
+            ->orderBy('levels.id')
             ->first();
     }
 }
