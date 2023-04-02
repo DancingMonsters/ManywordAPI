@@ -79,9 +79,9 @@ class LevelsRepository
         return DB::table('levels')
             ->select('levels.*', 'particles.name as particles_name')
             ->join('particles', 'particles.id', '=', 'levels.particles')
-            ->where('id', '>', $id)
-            ->where('language', $language)
-            ->where('published', 1)
+            ->where('levels.id', '>', $id)
+            ->where('levels.language', $language)
+            ->where('levels.published', 1)
             ->first();
     }
 }
