@@ -185,4 +185,12 @@ class LevelsService
         $level->letter_in_danger = (new LevelsLetterInDangerRepository())->getByLevelId($level->id);
         return $level;
     }
+
+    public function checkWord(int $id, Request $request)
+    {
+        $word = $request->post('word');
+        $repository = new LevelsRepository();
+        $words = $repository->getLevelWords($id);
+        dd($words);
+    }
 }
