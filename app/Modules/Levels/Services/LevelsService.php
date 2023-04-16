@@ -2,6 +2,7 @@
 
 namespace App\Modules\Levels\Services;
 
+use App\Modules\Dictionary\Repositories\DictionaryRepository;
 use App\Modules\Levels\Models\Levels;
 use App\Modules\Levels\Repositories\LevelsBlocksRepository;
 use App\Modules\Levels\Repositories\LevelsLetterInDangerRepository;
@@ -190,11 +191,17 @@ class LevelsService
     {
         $word = $request->post('word');
         $repository = new LevelsRepository();
-        $words = $repository->getLevelWords($id);
+        $level = $this->getById($id);
+        dd($level);
         $returnData = [
             "status" => 0,
             "in_level" => 0
         ];
-        dd($words->where('word', $word)->first());
+        if ($words->where('word', $word)->first() !== null) {
+            $returnData["status"] = 1;
+            $returnData["in_level"] = 1;
+        }
+        $wordsRepository = new DictionaryRepository();
+        $wordExists = $wordsRepository->getWordIdByName($word);
     }
 }
