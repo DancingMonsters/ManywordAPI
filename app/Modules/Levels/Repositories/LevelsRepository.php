@@ -85,4 +85,18 @@ class LevelsRepository
             ->orderBy('levels.id')
             ->first();
     }
+
+    /**
+     * Получение слов уровня
+     * @param int $levelId
+     * @return Collection
+     */
+    public function getLevelWords(int $levelId): Collection
+    {
+        return DB::table('levels_words')
+            ->select('words.word')
+            ->leftJoin('words', 'words.id', '=', 'levels_words.word_id')
+            ->where('levels_words.level_id', $levelId)
+            ->get();
+    }
 }
