@@ -45,6 +45,7 @@ Route::prefix('levels')->group(function () {
     Route::get('{id}', [LevelsController::class, 'getById'])->where('id', '[0-9]+'); //получение уровня
     Route::patch('{id?}', [LevelsController::class, 'setById'])->where('id', '[0-9]+'); //обновление уровня
     Route::delete('{id}', [LevelsController::class, 'deleteLevel'])->where('id', '[0-9]+'); //удаление уровня
+    Route::post('{id}/check_word', [LevelsController::class, 'checkWord'])->where('id', '[0-9]+');
 });
 
 Route::prefix('alphabet')->group(function () {
