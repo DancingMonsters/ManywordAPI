@@ -191,6 +191,10 @@ class LevelsService
         $word = $request->post('word');
         $repository = new LevelsRepository();
         $words = $repository->getLevelWords($id);
-        dd($words);
+        $returnData = [
+            "status" => 0,
+            "in_level" => 0
+        ];
+        dd($words->where('word', $word)->first());
     }
 }
