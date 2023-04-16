@@ -53,4 +53,9 @@ class LevelsController
     {
         return response()->json((new LevelsService())->nextLevelById($id, $request));
     }
+
+    public function checkWord(int $id, Request $request): JsonResponse
+    {
+        return response()->json((new LevelsService())->checkWord($id, $request));
+    }
 }

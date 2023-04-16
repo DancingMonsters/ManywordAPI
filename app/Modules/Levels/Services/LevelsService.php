@@ -186,7 +186,7 @@ class LevelsService
         return $level;
     }
 
-    public function checkWord(int $id, Request $request)
+    public function checkWord(int $id, Request $request): array
     {
         $word = $request->post('word');
         $repository = new LevelsRepository();
