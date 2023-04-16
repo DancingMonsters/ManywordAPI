@@ -190,18 +190,22 @@ class LevelsService
     public function checkWord(int $id, Request $request): array
     {
         $word = $request->post('word');
-        $repository = new LevelsRepository();
+        $wordsRepository = new DictionaryRepository();
         $level = $this->getById($id);
-        dd($level);
+        $wordExists = $wordsRepository->getWordIdByName($word, $level->particles, $level->language);
+
         $returnData = [
             "status" => 0,
             "in_level" => 0
         ];
-        if ($words->where('word', $word)->first() !== null) {
+        if ($wordExists !== null) {
+            $returnData["status"] = 1;
+        }
+        if ($level->words->where('word', $word)->first() !== null) {
             $returnData["status"] = 1;
             $returnData["in_level"] = 1;
         }
-        $wordsRepository = new DictionaryRepository();
-        $wordExists = $wordsRepository->getWordIdByName($word);
+
+        return $returnData;
     }
 }
