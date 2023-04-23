@@ -217,6 +217,9 @@ class LevelsService
                 $score += $weightsDecompressed[$char];
             }
 
+            $score *= mb_strlen($word);
+            $score *= 10;
+
             if ($level->words->where('word', $word)->first() !== null) {
                 $returnData["in_level"] = 1;
             }
