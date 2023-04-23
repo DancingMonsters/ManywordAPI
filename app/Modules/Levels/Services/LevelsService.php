@@ -9,6 +9,8 @@ use App\Modules\Levels\Repositories\LevelsLetterInDangerRepository;
 use App\Modules\Levels\Repositories\LevelsRepository;
 use App\Modules\Levels\Repositories\LevelsWinConditionsRepository;
 use App\Modules\Levels\Repositories\LevelsWordsRepository;
+use App\Modules\Services\Repositories\LanguagesWeightsRepository;
+use App\Modules\Services\Services\LanguagesWeightsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -196,13 +198,30 @@ class LevelsService
 
         $returnData = [
             "status" => 0,
-            "in_level" => 0
+            "in_level" => 0,
+            "score" => 0
         ];
         if ($wordExists !== null) {
             $returnData["status"] = 1;
+
+            $score = 0;
+            $weights = json_decode((new LanguagesWeightsRepository())->get($level->language));
+            $weightsDecompressed = [];
+            foreach ($weights as $key => $weight) {
+                foreach ($weight as $value) {
+                    $weightsDecompressed[$value] = $key;
+                }
+            }
+
+            foreach ($word as $char) {
+                $score += $weightsDecompressed[$char];
+            }
+
             if ($level->words->where('word', $word)->first() !== null) {
                 $returnData["in_level"] = 1;
             }
+
+            $returnData["score"] = $score;
         }
 
         return $returnData;
