@@ -212,6 +212,7 @@ class LevelsService
                     $weightsDecompressed[$value] = $key;
                 }
             }
+            dd($weightsDecompressed);
 
             foreach (str_split($word) as $char) {
                 $score += $weightsDecompressed[$char];
