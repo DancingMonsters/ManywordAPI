@@ -195,13 +195,13 @@ class LevelsService
         $wordExists = $wordsRepository->getWordIdByName($word, $level->particles, $level->language);
 
         $returnData = [
-            "status" => false,
-            "in_level" => false
+            "status" => 0,
+            "in_level" => 0
         ];
         if ($wordExists !== null) {
-            $returnData["status"] = true;
+            $returnData["status"] = 1;
             if ($level->words->where('word', $word)->first() !== null) {
-                $returnData["in_level"] = true;
+                $returnData["in_level"] = 1;
             }
         }
 
