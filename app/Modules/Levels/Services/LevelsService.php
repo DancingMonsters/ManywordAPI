@@ -213,7 +213,7 @@ class LevelsService
                 }
             }
 
-            foreach ($word as $char) {
+            foreach (str_split($word) as $char) {
                 $score += $weightsDecompressed[$char];
             }
 
